@@ -1246,6 +1246,13 @@ def main():
     <div class="footer">
         <p>🇮🇳 <strong>India AI Impact Summit 2026</strong> | Feb 16-20 | Bharat Mandapam, New Delhi</p>
         <p style="margin-top: 0.5rem;">Made with ❤️ for PMs, Tech Leaders & Engineers</p>
+        <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
+            <strong>Created by Abhishek Takkhi</strong>
+            <br>
+            <a href="https://www.linkedin.com/in/abhishektakkhi/" target="_blank" style="color: #667eea; text-decoration: none; font-weight: 500;">
+                🔗 Connect on LinkedIn
+            </a>
+        </p>
     </div>
     """, unsafe_allow_html=True)
 
