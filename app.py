@@ -1249,7 +1249,7 @@ def main():
         <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
             <strong>Created by Abhishek Takkhi</strong>
             <br>
-            <a href="https://www.linkedin.com/in/abhishektakkhi/" target="_blank" style="color: #667eea; text-decoration: none; font-weight: 500;">
+            <a href="https://www.linkedin.com/in/abhishek-t-922055391/" target="_blank" style="color: #667eea; text-decoration: none; font-weight: 500;">
                 🔗 Connect on LinkedIn
             </a>
         </p>
