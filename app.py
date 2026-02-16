@@ -37,7 +37,21 @@ md_html("""
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
 
-.stApp, .stApp * { font-family: 'Plus Jakarta Sans', sans-serif; }
+/* Apply your font to content, but DON'T break icon fonts */
+.stApp { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+/* normal text elements */
+.stMarkdown, .stMarkdown * ,
+.stText, .stText * ,
+label, input, textarea, button, select {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+/* restore Streamlit icon fonts */
+.material-icons, .material-symbols-outlined, .material-symbols-rounded {
+  font-family: 'Material Icons' !important;
+}
+
 
 /* Keep code blocks readable */
 code, pre, pre * { font-family: 'JetBrains Mono', monospace !important; }
