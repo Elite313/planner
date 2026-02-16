@@ -1067,19 +1067,28 @@ def render_itinerary():
                 if not sessions:
                     st.info("No highly matched sessions.")
                     continue
-
-                for s in sessions:
+for s in sessions:
     score = s.get("score", 0)
     is_vip = s.get("is_vip", False)
 
-    with st.expander(f"**{s.get('title','')}** | {s.get('time', 'TBA')} {'⭐' if is_vip else ''}"):
+    hall = s.get("hall") or s.get("hall_name") or s.get("room")
+    venue = s.get("venue") or s.get("location")
+
+    place = " • ".join(p for p in [hall, venue] if p)
+
+    with st.expander(
+        f"**{s.get('title','')}** | {s.get('time', 'TBA')} | {place} {'⭐' if is_vip else ''}".strip()
+    ):
         c1, c2 = st.columns([2, 1])
 
         with c1:
             st.write(s.get("description", ""))
             if s.get("speakers"):
                 st.write(f"**Speakers:** {', '.join(s['speakers'][:3])}")
-            md_html(" ".join([f'<span class="topic-tag">{t}</span>' for t in s.get("topics", [])[:5]]))
+            md_html(" ".join(
+                f'<span class="topic-tag">{t}</span>'
+                for t in s.get("topics", [])[:5]
+            ))
 
         with c2:
             if is_vip:
@@ -1090,14 +1099,8 @@ def render_itinerary():
                 f'✓ {"High" if score > 10 else "Good"} Match</span>'
             )
 
-            hall = s.get("hall") or s.get("hall_name") or s.get("room")
-
-            if hall and venue:
-                st.write(f"📍 {hall} • {venue}")
-            elif hall:
-                st.write(f"📍 {hall}")
-            elif venue:
-                st.write(f"📍 {venue}")
+            if place:
+                st.write(f"📍 {place}")
 
             st.progress(min(score / 20, 1.0))
 
