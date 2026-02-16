@@ -1076,31 +1076,35 @@ def render_itinerary():
 venue = s.get("venue") or s.get("location")
 place = " • ".join([p for p in [hall, venue] if p])
 
-with st.expander(
-    f"**{s.get('title','')}** | {s.get('time', 'TBA')} | {place} {'⭐' if is_vip else ''}".strip()
-):
+with st.expander(f"**{s.get('title','')}** | {s.get('time', 'TBA')} {'⭐' if is_vip else ''}"):
+    c1, c2 = st.columns([2, 1])
 
-                        c1, c2 = st.columns([2, 1])
-                        with c1:
-                            st.write(s.get("description", ""))
-                            if s.get("speakers"):
-                                st.write(f"**Speakers:** {', '.join(s['speakers'][:3])}")
-                            md_html(" ".join([f'<span class="topic-tag">{t}</span>' for t in s.get("topics", [])[:5]]))
-                        with c2:
-                            if is_vip:
-                                md_html('<span class="badge badge-vip">⭐ VIP Session</span>')
-                            md_html(f'<span class="badge badge-{"high" if score > 10 else "medium"}">✓ {"High" if score > 10 else "Good"} Match</span>')
-                            hall = s.get("hall") or s.get("hall_name") or s.get("room")  # supports multiple keys
-venue = s.get("venue") or s.get("location")
+    with c1:
+        st.write(s.get("description", ""))
+        if s.get("speakers"):
+            st.write(f"**Speakers:** {', '.join(s['speakers'][:3])}")
+        md_html(" ".join([f'<span class="topic-tag">{t}</span>' for t in s.get("topics", [])[:5]]))
 
-if hall and venue:
-    st.write(f"📍 {hall} • {venue}")
-elif hall:
-    st.write(f"📍 {hall}")
-elif venue:
-    st.write(f"📍 {venue}")
+    with c2:
+        if is_vip:
+            md_html('<span class="badge badge-vip">⭐ VIP Session</span>')
+        md_html(
+            f'<span class="badge badge-{"high" if score > 10 else "medium"}">'
+            f'✓ {"High" if score > 10 else "Good"} Match</span>'
+        )
 
-                            st.progress(min(score / 20, 1.0))
+        hall = s.get("hall") or s.get("hall_name") or s.get("room")
+        venue = s.get("venue") or s.get("location")
+
+        if hall and venue:
+            st.write(f"📍 {hall} • {venue}")
+        elif hall:
+            st.write(f"📍 {hall}")
+        elif venue:
+            st.write(f"📍 {venue}")
+
+        st.progress(min(score / 20, 1.0))
+
 
     st.markdown("---")
     if st.button("🔄 Start Over", use_container_width=True):
