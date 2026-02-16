@@ -1,7 +1,7 @@
 """
 AI Summit Navigator - Premium Edition
-A beautifully designed personalized itinerary generator for AI Impact Summit 2026
-Inspired by modern event planning UX patterns
+Personalized itinerary for Product Managers, Tech Leaders & Engineers
+India AI Impact Summit 2026
 """
 
 import streamlit as st
@@ -9,8 +9,10 @@ import json
 import os
 from datetime import datetime
 import hashlib
+import base64
+from urllib.parse import quote
 
-# Page config - White theme
+# Page config
 st.set_page_config(
     page_title="AI Summit Planner | India AI Impact Summit 2026",
     page_icon="✨",
@@ -18,34 +20,54 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS for white theme and modern styling
+# Custom CSS
 st.markdown("""
 <style>
-    /* Import Google Fonts */
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
 
-    /* Global Styles */
     .stApp {
         background-color: #FFFFFF;
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
-    /* Hide Streamlit branding */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
 
-    /* Main container */
     .main .block-container {
-        padding-top: 2rem;
+        padding-top: 1rem;
         padding-bottom: 2rem;
         max-width: 1200px;
     }
 
-    /* Hero Section */
+    /* Logo Section */
+    .logo-section {
+        text-align: center;
+        padding: 1rem 0;
+        margin-bottom: 1rem;
+    }
+
+    .logo-section img {
+        max-height: 80px;
+        margin-bottom: 0.5rem;
+    }
+
+    .logo-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        color: white;
+        padding: 0.25rem 1rem;
+        border-radius: 100px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+
+    /* Hero */
     .hero-title {
-        font-size: 3.5rem;
+        font-size: 3rem;
         font-weight: 800;
         color: #1a1a1a;
         line-height: 1.1;
@@ -54,102 +76,67 @@ st.markdown("""
     }
 
     .hero-subtitle {
-        font-size: 1.25rem;
+        font-size: 1.2rem;
         color: #5C5C5A;
         font-weight: 400;
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
     }
 
     .hero-stats {
         font-family: 'JetBrains Mono', monospace;
-        font-size: 1.1rem;
+        font-size: 1rem;
         color: #1a1a1a;
         background: #f8f9fa;
-        padding: 1rem 1.5rem;
+        padding: 0.75rem 1.25rem;
         border-radius: 12px;
         display: inline-block;
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Target Audience Badge */
+    .audience-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 100px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin: 0.25rem;
     }
 
     /* Stats Cards */
     .stat-card {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border-radius: 16px;
-        padding: 1.5rem;
+        padding: 1.25rem;
         text-align: center;
         color: white;
         box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
     }
 
     .stat-number {
-        font-size: 2.5rem;
+        font-size: 2rem;
         font-weight: 800;
         margin-bottom: 0.25rem;
     }
 
     .stat-label {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         opacity: 0.9;
         text-transform: uppercase;
         letter-spacing: 0.05em;
     }
 
-    /* Progress Steps */
-    .progress-container {
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-        margin: 2rem 0;
-        padding: 1.5rem;
-        background: #f8f9fa;
-        border-radius: 16px;
-    }
-
-    .step {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        color: #9ca3af;
-    }
-
-    .step.active {
-        color: #1a1a1a;
-    }
-
-    .step.completed {
-        color: #10b981;
-    }
-
-    .step-number {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background: #e5e7eb;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        font-size: 0.875rem;
-    }
-
-    .step.active .step-number {
-        background: #1a1a1a;
-        color: white;
-    }
-
-    .step.completed .step-number {
-        background: #10b981;
-        color: white;
-    }
-
-    /* Question Cards */
+    /* Question Card */
     .question-card {
         background: #ffffff;
         border: 2px solid #e5e7eb;
         border-radius: 16px;
-        padding: 2rem;
-        margin: 1.5rem 0;
-        transition: all 0.2s ease;
+        padding: 1.5rem;
+        margin: 1rem 0;
     }
 
     .question-card:hover {
@@ -158,40 +145,16 @@ st.markdown("""
     }
 
     .question-title {
-        font-size: 1.25rem;
+        font-size: 1.2rem;
         font-weight: 600;
         color: #1a1a1a;
         margin-bottom: 0.5rem;
     }
 
     .question-subtitle {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         color: #6b7280;
-        margin-bottom: 1.5rem;
-    }
-
-    /* Option Pills */
-    .option-pill {
-        display: inline-block;
-        padding: 0.75rem 1.25rem;
-        margin: 0.25rem;
-        border: 2px solid #e5e7eb;
-        border-radius: 100px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        font-weight: 500;
-        color: #374151;
-    }
-
-    .option-pill:hover {
-        border-color: #667eea;
-        background: #f5f3ff;
-    }
-
-    .option-pill.selected {
-        border-color: #667eea;
-        background: #667eea;
-        color: white;
+        margin-bottom: 1rem;
     }
 
     /* Session Cards */
@@ -199,8 +162,8 @@ st.markdown("""
         background: #ffffff;
         border: 1px solid #e5e7eb;
         border-radius: 16px;
-        padding: 1.5rem;
-        margin: 1rem 0;
+        padding: 1.25rem;
+        margin: 0.75rem 0;
         transition: all 0.2s ease;
     }
 
@@ -215,162 +178,121 @@ st.markdown("""
     }
 
     .session-title {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         font-weight: 600;
         color: #1a1a1a;
         margin-bottom: 0.5rem;
     }
 
     .session-meta {
-        font-size: 0.875rem;
+        font-size: 0.85rem;
         color: #6b7280;
         display: flex;
         gap: 1rem;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.5rem;
     }
 
-    .session-description {
-        font-size: 0.95rem;
-        color: #4b5563;
-        line-height: 1.6;
-    }
-
-    /* Match Score Badge */
+    /* Badges */
     .match-badge {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.5rem 1rem;
+        padding: 0.4rem 0.8rem;
         border-radius: 100px;
-        font-size: 0.875rem;
+        font-size: 0.8rem;
         font-weight: 600;
     }
 
-    .match-high {
-        background: #d1fae5;
-        color: #065f46;
-    }
+    .match-high { background: #d1fae5; color: #065f46; }
+    .match-medium { background: #fef3c7; color: #92400e; }
+    .match-low { background: #f3f4f6; color: #4b5563; }
 
-    .match-medium {
-        background: #fef3c7;
-        color: #92400e;
-    }
-
-    .match-low {
-        background: #f3f4f6;
-        color: #4b5563;
-    }
-
-    /* VIP Badge */
     .vip-badge {
         background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
         color: white;
-        padding: 0.25rem 0.75rem;
+        padding: 0.2rem 0.6rem;
         border-radius: 100px;
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
     }
 
-    /* Speaker Tags */
-    .speaker-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        background: #f3f4f6;
-        border-radius: 8px;
-        font-size: 0.875rem;
-        margin: 0.25rem;
-    }
-
-    /* Topic Tags */
-    .topic-tag {
-        display: inline-block;
-        padding: 0.25rem 0.75rem;
+    .role-badge {
         background: #ede9fe;
         color: #5b21b6;
+        padding: 0.25rem 0.75rem;
         border-radius: 100px;
         font-size: 0.75rem;
         font-weight: 500;
         margin: 0.125rem;
     }
 
-    /* Day Navigation */
-    .day-nav {
-        display: flex;
-        gap: 0.5rem;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
-    }
-
-    .day-pill {
-        padding: 0.75rem 1.5rem;
-        border: 2px solid #e5e7eb;
+    .topic-tag {
+        display: inline-block;
+        padding: 0.2rem 0.6rem;
+        background: #ede9fe;
+        color: #5b21b6;
         border-radius: 100px;
-        cursor: pointer;
-        transition: all 0.2s ease;
+        font-size: 0.7rem;
         font-weight: 500;
+        margin: 0.1rem;
     }
 
-    .day-pill:hover {
-        border-color: #667eea;
-    }
-
-    .day-pill.active {
-        background: #1a1a1a;
-        color: white;
-        border-color: #1a1a1a;
-    }
-
-    /* CTA Buttons */
-    .cta-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 1rem 2rem;
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 1rem;
-        border: none;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-    }
-
-    .cta-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-    }
-
-    .cta-secondary {
-        background: white;
-        color: #1a1a1a;
-        padding: 1rem 2rem;
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 1rem;
-        border: 2px solid #e5e7eb;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .cta-secondary:hover {
-        border-color: #1a1a1a;
-    }
-
-    /* Feature Badge */
-    .feature-badge {
+    .speaker-tag {
         display: inline-flex;
         align-items: center;
+        gap: 0.4rem;
+        padding: 0.4rem 0.8rem;
+        background: #f3f4f6;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        margin: 0.2rem;
+    }
+
+    /* Action Buttons */
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        background: #f0fdf4;
-        color: #166534;
-        border-radius: 100px;
-        font-size: 0.875rem;
-        font-weight: 500;
-        margin-bottom: 1rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        border: none;
+    }
+
+    .btn-whatsapp {
+        background: #25D366;
+        color: white;
+    }
+
+    .btn-whatsapp:hover {
+        background: #128C7E;
+        transform: translateY(-2px);
+    }
+
+    .btn-pdf {
+        background: #dc2626;
+        color: white;
+    }
+
+    .btn-pdf:hover {
+        background: #b91c1c;
+        transform: translateY(-2px);
+    }
+
+    .btn-share {
+        background: #3b82f6;
+        color: white;
+    }
+
+    .btn-share:hover {
+        background: #2563eb;
+        transform: translateY(-2px);
     }
 
     /* Expo Card */
@@ -378,9 +300,10 @@ st.markdown("""
         background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
         border: 1px solid #e2e8f0;
         border-radius: 16px;
-        padding: 1.5rem;
+        padding: 1.25rem;
         text-align: center;
         transition: all 0.2s ease;
+        height: 100%;
     }
 
     .expo-card:hover {
@@ -388,42 +311,43 @@ st.markdown("""
         box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
     }
 
-    .expo-icon {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-    }
+    .expo-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .expo-title { font-size: 1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 0.4rem; }
+    .expo-tags { font-size: 0.75rem; color: #6b7280; }
 
-    .expo-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #1a1a1a;
-        margin-bottom: 0.5rem;
-    }
-
-    .expo-tags {
+    /* Feature Badge */
+    .feature-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.4rem 0.8rem;
+        background: #f0fdf4;
+        color: #166534;
+        border-radius: 100px;
         font-size: 0.8rem;
-        color: #6b7280;
+        font-weight: 500;
+        margin-bottom: 0.75rem;
     }
 
     /* Footer */
     .footer {
         text-align: center;
-        padding: 3rem 0;
-        margin-top: 4rem;
+        padding: 2rem 0;
+        margin-top: 3rem;
         border-top: 1px solid #e5e7eb;
         color: #9ca3af;
-        font-size: 0.875rem;
+        font-size: 0.85rem;
     }
 
-    /* Streamlit overrides */
+    /* Streamlit Overrides */
     .stButton > button {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         border: none;
-        padding: 0.75rem 2rem;
+        padding: 0.6rem 1.5rem;
         border-radius: 12px;
         font-weight: 600;
-        font-size: 1rem;
+        font-size: 0.95rem;
         transition: all 0.2s ease;
     }
 
@@ -432,22 +356,9 @@ st.markdown("""
         box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
     }
 
-    .stSelectbox > div > div {
+    .stSelectbox > div > div, .stMultiSelect > div > div {
         border-radius: 12px;
         border: 2px solid #e5e7eb;
-    }
-
-    .stMultiSelect > div > div {
-        border-radius: 12px;
-        border: 2px solid #e5e7eb;
-    }
-
-    .stRadio > div {
-        gap: 0.5rem;
-    }
-
-    .stCheckbox > label {
-        font-weight: 500;
     }
 
     div[data-testid="stExpander"] {
@@ -465,7 +376,7 @@ st.markdown("""
 
     .stTabs [data-baseweb="tab"] {
         border-radius: 8px;
-        padding: 0.75rem 1.5rem;
+        padding: 0.6rem 1.25rem;
         font-weight: 500;
     }
 
@@ -474,10 +385,15 @@ st.markdown("""
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
-    /* Progress bar */
     .stProgress > div > div {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border-radius: 100px;
+    }
+
+    /* Print styles for PDF */
+    @media print {
+        .no-print { display: none !important; }
+        .stApp { background: white !important; }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -493,7 +409,7 @@ def load_event_data():
 
 EVENT_DATA = load_event_data()
 
-# Community data storage
+# Community storage
 COMMUNITY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "community_itineraries.json")
 
 def load_community_data():
@@ -517,58 +433,177 @@ DAY_INFO = {
     "2026-02-20": {"short": "Feb 20", "name": "Friday", "theme": "Global Cooperation"},
 }
 
-ROLES = [
-    "Tech Professional / Engineer",
-    "Startup Founder / Entrepreneur",
-    "Researcher / Academic",
-    "Policy Maker / Government",
-    "Investor / VC",
-    "Student / Early Career",
-    "Business Executive / Leader",
-    "Consultant / Advisor",
-]
-
-INTERESTS = {
-    "Generative AI & LLMs": ["genai", "llm", "foundation-models", "chatgpt"],
-    "AI Safety & Ethics": ["ai-safety", "alignment", "responsible-ai", "ethics"],
-    "Healthcare AI": ["healthcare", "diagnostics", "drug-discovery", "health-equity"],
-    "Enterprise AI": ["enterprise", "automation", "productivity", "business"],
-    "Policy & Governance": ["policy", "governance", "regulation", "law"],
-    "Research & Science": ["research", "academic", "papers", "science"],
-    "Startups & Innovation": ["startups", "entrepreneurship", "demos", "funding"],
-    "Education & Skills": ["education", "skills", "learning", "career"],
-    "Climate & Sustainability": ["climate", "sustainability", "energy", "environment"],
-    "Hardware & Infrastructure": ["computing", "hardware", "gpu", "infrastructure"],
+# Roles focused on PM, Leaders, Tech
+ROLES = {
+    "pm": {
+        "name": "Product Manager",
+        "icon": "📱",
+        "keywords": ["product", "roadmap", "strategy", "user", "market"],
+        "recommended_tracks": ["economic_dev", "resilience", "human_capital"]
+    },
+    "tech_lead": {
+        "name": "Tech Lead / Engineering Manager",
+        "icon": "👨‍💻",
+        "keywords": ["engineering", "architecture", "technical", "team", "delivery"],
+        "recommended_tracks": ["science", "democratizing", "safe_ai"]
+    },
+    "engineer": {
+        "name": "Software Engineer / Developer",
+        "icon": "⚙️",
+        "keywords": ["code", "development", "implementation", "technical", "build"],
+        "recommended_tracks": ["science", "democratizing", "resilience"]
+    },
+    "founder": {
+        "name": "Founder / CXO",
+        "icon": "🚀",
+        "keywords": ["startup", "business", "vision", "investment", "growth"],
+        "recommended_tracks": ["economic_dev", "resilience", "inclusion"]
+    },
+    "vp_director": {
+        "name": "VP / Director",
+        "icon": "📊",
+        "keywords": ["strategy", "leadership", "transformation", "scale", "operations"],
+        "recommended_tracks": ["economic_dev", "resilience", "safe_ai"]
+    },
+    "researcher": {
+        "name": "AI/ML Researcher",
+        "icon": "🔬",
+        "keywords": ["research", "papers", "models", "experiments", "innovation"],
+        "recommended_tracks": ["science", "democratizing", "safe_ai"]
+    },
+    "data_scientist": {
+        "name": "Data Scientist / ML Engineer",
+        "icon": "📈",
+        "keywords": ["data", "models", "analytics", "ml", "insights"],
+        "recommended_tracks": ["science", "economic_dev", "democratizing"]
+    },
+    "architect": {
+        "name": "Solutions / Enterprise Architect",
+        "icon": "🏗️",
+        "keywords": ["architecture", "enterprise", "integration", "systems", "design"],
+        "recommended_tracks": ["resilience", "democratizing", "safe_ai"]
+    },
 }
 
-GOALS = [
-    ("networking", "Maximize Networking Opportunities", "Meet industry leaders and peers"),
-    ("learning", "Deep Learning & Skill Building", "Attend technical sessions and workshops"),
-    ("business", "Business & Investment Insights", "Explore partnerships and funding"),
-    ("policy", "Policy & Governance Updates", "Understand regulatory landscape"),
-    ("inspiration", "Get Inspired by Innovators", "Hear from visionary speakers"),
-    ("demos", "See Cutting-Edge Demos", "Experience latest AI applications"),
+# Interests
+INTERESTS = {
+    "Generative AI & LLMs": {
+        "keywords": ["genai", "llm", "foundation-models", "chatgpt"],
+        "icon": "🤖",
+        "for_roles": ["engineer", "researcher", "data_scientist", "pm"]
+    },
+    "AI Product Strategy": {
+        "keywords": ["product", "strategy", "roadmap", "market", "user"],
+        "icon": "🎯",
+        "for_roles": ["pm", "founder", "vp_director"]
+    },
+    "AI Safety & Ethics": {
+        "keywords": ["ai-safety", "alignment", "responsible-ai", "ethics"],
+        "icon": "🛡️",
+        "for_roles": ["pm", "tech_lead", "vp_director", "researcher"]
+    },
+    "Enterprise AI Adoption": {
+        "keywords": ["enterprise", "automation", "transformation", "scale"],
+        "icon": "🏢",
+        "for_roles": ["architect", "vp_director", "tech_lead", "pm"]
+    },
+    "AI Infrastructure & MLOps": {
+        "keywords": ["infrastructure", "mlops", "deployment", "scale", "computing"],
+        "icon": "⚡",
+        "for_roles": ["engineer", "architect", "tech_lead", "data_scientist"]
+    },
+    "Leadership & Team Building": {
+        "keywords": ["leadership", "team", "culture", "hiring", "management"],
+        "icon": "👥",
+        "for_roles": ["tech_lead", "vp_director", "founder"]
+    },
+    "Startup & VC Insights": {
+        "keywords": ["startup", "funding", "vc", "growth", "entrepreneurship"],
+        "icon": "💰",
+        "for_roles": ["founder", "pm", "vp_director"]
+    },
+    "Research & Innovation": {
+        "keywords": ["research", "papers", "innovation", "cutting-edge", "science"],
+        "icon": "🔬",
+        "for_roles": ["researcher", "data_scientist", "engineer"]
+    },
+    "Healthcare AI": {
+        "keywords": ["healthcare", "medical", "diagnostics", "health"],
+        "icon": "🏥",
+        "for_roles": ["pm", "researcher", "founder"]
+    },
+    "FinTech & AI": {
+        "keywords": ["fintech", "finance", "trading", "banking", "payments"],
+        "icon": "💳",
+        "for_roles": ["pm", "architect", "founder"]
+    },
+}
+
+# Goals with networking scores
+GOALS = {
+    "networking": {
+        "name": "Maximize Networking",
+        "desc": "Meet industry leaders, potential partners & collaborators",
+        "icon": "🤝",
+        "score_boost": {"speakers": 5, "roundtable": 4, "ceo": 5}
+    },
+    "learning": {
+        "name": "Deep Technical Learning",
+        "desc": "Master new AI concepts, tools & techniques",
+        "icon": "📚",
+        "score_boost": {"workshop": 4, "technical": 3, "hands-on": 4}
+    },
+    "strategy": {
+        "name": "Strategic Insights",
+        "desc": "Understand market trends, competition & opportunities",
+        "icon": "🎯",
+        "score_boost": {"strategy", "market", "trends", "future"}
+    },
+    "hiring": {
+        "name": "Talent & Hiring",
+        "desc": "Find talent, build team, understand hiring landscape",
+        "icon": "👔",
+        "score_boost": {"talent", "hiring", "career", "skills"}
+    },
+    "investment": {
+        "name": "Investment & Funding",
+        "desc": "Meet investors, explore funding opportunities",
+        "icon": "💰",
+        "score_boost": {"investment", "funding", "vc", "startup"}
+    },
+    "partnerships": {
+        "name": "Business Partnerships",
+        "desc": "Explore B2B partnerships and collaborations",
+        "icon": "🤝",
+        "score_boost": {"partnership", "collaboration", "enterprise", "b2b"}
+    },
+}
+
+# Company sizes for context
+COMPANY_SIZES = [
+    "Startup (1-50)",
+    "Scale-up (51-200)",
+    "Mid-size (201-1000)",
+    "Enterprise (1000+)",
+    "Freelance / Solo",
 ]
 
 EXPO_ICONS = {
-    "Healthcare AI": "🏥",
-    "AgriTech": "🌾",
-    "FinTech": "💳",
-    "EdTech": "📚",
-    "Smart Cities": "🏙️",
-    "Climate & Sustainability": "🌍",
-    "Manufacturing & Industry 4.0": "🏭",
-    "Government & Public Services": "🏛️",
-    "Startups & Innovation": "🚀",
-    "International Pavilions": "🌐",
+    "Healthcare AI": "🏥", "AgriTech": "🌾", "FinTech": "💳", "EdTech": "📚",
+    "Smart Cities": "🏙️", "Climate & Sustainability": "🌍", "Manufacturing & Industry 4.0": "🏭",
+    "Government & Public Services": "🏛️", "Startups & Innovation": "🚀", "International Pavilions": "🌐",
 }
 
 
 def calculate_session_score(session, profile):
-    """Calculate relevance score with networking ROI"""
+    """Calculate relevance score with role-based weighting"""
     score = 0.0
-    networking_score = 0.0
-    learning_score = 0.0
+    networking_roi = 0.0
+    pm_relevance = 0.0
+    tech_relevance = 0.0
+
+    role_data = ROLES.get(profile.get("role", ""), {})
+    role_keywords = role_data.get("keywords", [])
 
     # Level match
     session_level = session.get("level", "all")
@@ -580,63 +615,67 @@ def calculate_session_score(session, profile):
         score += 5.0
     elif proficiency == "intermediate":
         score += 2.0
-    elif proficiency == "advanced" and session_level == "intermediate":
-        score += 3.0
 
     # Topic match
     session_topics = session.get("topics", [])
+    session_desc = (session.get("description", "") + " " + session.get("title", "")).lower()
     user_interests = profile.get("interests", [])
 
     for topic in session_topics:
         if topic in user_interests:
             score += 4.0
-            learning_score += 2.0
-        for interest in user_interests:
-            if interest in topic or topic in interest:
-                score += 1.5
-                learning_score += 1.0
 
-    # Goal matching
-    session_desc = (session.get("description", "") + " " + session.get("title", "")).lower()
+    # Role-specific keywords
+    for keyword in role_keywords:
+        if keyword in session_desc:
+            score += 2.0
+            if profile.get("role") in ["pm", "vp_director", "founder"]:
+                pm_relevance += 2.0
+            else:
+                tech_relevance += 2.0
+
+    # Goal-based scoring
     user_goals = profile.get("goals", [])
 
     if "networking" in user_goals:
-        networking_keywords = ["networking", "leaders", "ceo", "roundtable", "connect", "meet"]
+        networking_keywords = ["ceo", "roundtable", "leaders", "networking", "connect"]
         for kw in networking_keywords:
             if kw in session_desc:
-                networking_score += 3.0
+                networking_roi += 3.0
                 score += 2.0
 
     if "learning" in user_goals:
-        learning_keywords = ["workshop", "tutorial", "deep-dive", "technical", "hands-on"]
-        for kw in learning_keywords:
+        for kw in ["workshop", "technical", "deep-dive", "hands-on"]:
             if kw in session_desc:
-                learning_score += 2.0
                 score += 2.0
+                tech_relevance += 2.0
 
-    # Speaker bonus (networking potential)
+    if "strategy" in user_goals:
+        for kw in ["strategy", "market", "trends", "future", "roadmap"]:
+            if kw in session_desc:
+                score += 2.0
+                pm_relevance += 2.0
+
+    # Speaker bonus
     if session.get("speakers"):
-        score += 1.5
-        networking_score += 2.0
-        top_speakers = ["sundar", "sam altman", "jensen", "demis", "yann", "dario"]
+        score += 2.0
+        networking_roi += 3.0
+        top_speakers = ["sundar", "sam altman", "jensen", "demis", "yann", "dario", "satya"]
         for speaker in session.get("speakers", []):
             if any(name in speaker.lower() for name in top_speakers):
                 score += 5.0
-                networking_score += 5.0
+                networking_roi += 5.0
+                session["is_vip"] = True
 
-    # VIP session bonus
-    if session.get("level") == "advanced" and session.get("speakers"):
-        session["is_vip"] = True
-        score += 3.0
-
-    session["networking_roi"] = networking_score
-    session["learning_value"] = learning_score
+    session["networking_roi"] = networking_roi
+    session["pm_relevance"] = pm_relevance
+    session["tech_relevance"] = tech_relevance
 
     return score
 
 
 def generate_itinerary(profile):
-    """Generate personalized itinerary with ROI scoring"""
+    """Generate personalized itinerary"""
     available_days = profile.get("days", DAYS)
     all_sessions = []
 
@@ -651,10 +690,8 @@ def generate_itinerary(profile):
             session_copy["score"] = calculate_session_score(session_copy, profile)
             all_sessions.append(session_copy)
 
-    # Sort by score
     all_sessions.sort(key=lambda x: x["score"], reverse=True)
 
-    # Group by day
     itinerary = {}
     for day in available_days:
         day_sessions = [s for s in all_sessions if s["date"] == day]
@@ -663,14 +700,150 @@ def generate_itinerary(profile):
     return itinerary
 
 
+def generate_whatsapp_message(profile, itinerary):
+    """Generate WhatsApp shareable message"""
+    role_name = ROLES.get(profile.get("role", ""), {}).get("name", "Attendee")
+
+    msg = f"🤖 *My AI Summit 2026 Schedule*\n"
+    msg += f"👤 {profile.get('name', 'Attendee')} | {role_name}\n"
+    msg += f"📍 Bharat Mandapam, New Delhi\n"
+    msg += f"📅 Feb 16-20, 2026\n\n"
+
+    for day, sessions in itinerary.items():
+        if sessions:
+            day_info = DAY_INFO.get(day, {})
+            msg += f"*{day_info.get('name', '')} ({day_info.get('short', '')})*\n"
+            for s in sessions[:3]:
+                msg += f"• {s.get('time', 'TBA')} - {s['title'][:40]}...\n"
+            msg += "\n"
+
+    msg += "📱 Create yours: https://planner.streamlit.app"
+    return msg
+
+
+def generate_pdf_html(profile, itinerary):
+    """Generate HTML for PDF download"""
+    role_name = ROLES.get(profile.get("role", ""), {}).get("name", "Attendee")
+
+    html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>AI Summit 2026 - Personalized Schedule</title>
+        <style>
+            body {{ font-family: 'Segoe UI', Arial, sans-serif; margin: 40px; color: #1a1a1a; }}
+            .header {{ text-align: center; margin-bottom: 30px; border-bottom: 3px solid #667eea; padding-bottom: 20px; }}
+            .logo {{ font-size: 28px; font-weight: bold; color: #667eea; }}
+            .subtitle {{ color: #666; margin-top: 5px; }}
+            .profile {{ background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 25px; }}
+            .profile h3 {{ margin: 0 0 10px 0; color: #667eea; }}
+            .day {{ margin-bottom: 25px; }}
+            .day-header {{ background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 10px 15px; border-radius: 8px 8px 0 0; }}
+            .day-header h3 {{ margin: 0; }}
+            .day-theme {{ font-size: 0.9em; opacity: 0.9; }}
+            .sessions {{ border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px; }}
+            .session {{ padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }}
+            .session:last-child {{ border-bottom: none; }}
+            .session-title {{ font-weight: 600; color: #1a1a1a; }}
+            .session-meta {{ font-size: 0.85em; color: #666; margin-top: 3px; }}
+            .session-speakers {{ font-size: 0.85em; color: #667eea; margin-top: 3px; }}
+            .vip {{ background: #fffbeb; border-left: 3px solid #f59e0b; }}
+            .footer {{ text-align: center; margin-top: 30px; color: #999; font-size: 0.85em; }}
+            .match {{ display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75em; font-weight: 600; }}
+            .match-high {{ background: #d1fae5; color: #065f46; }}
+            .match-medium {{ background: #fef3c7; color: #92400e; }}
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <div class="logo">🤖 India AI Impact Summit 2026</div>
+            <div class="subtitle">Personalized Schedule</div>
+        </div>
+
+        <div class="profile">
+            <h3>👤 {profile.get('name', 'Attendee')}</h3>
+            <p><strong>Role:</strong> {role_name}</p>
+            <p><strong>Proficiency:</strong> {profile.get('proficiency', 'Intermediate').title()}</p>
+            <p><strong>Goals:</strong> {', '.join(profile.get('goals', []))}</p>
+        </div>
+    """
+
+    for day, sessions in itinerary.items():
+        if sessions:
+            day_info = DAY_INFO.get(day, {})
+            html += f"""
+            <div class="day">
+                <div class="day-header">
+                    <h3>{day_info.get('name', '')} - {day_info.get('short', '')}</h3>
+                    <div class="day-theme">🎪 {day_info.get('theme', '')}</div>
+                </div>
+                <div class="sessions">
+            """
+            for s in sessions:
+                vip_class = "vip" if s.get("is_vip") else ""
+                match_class = "match-high" if s.get("score", 0) > 12 else "match-medium"
+                speakers = ", ".join(s.get("speakers", [])[:2]) if s.get("speakers") else ""
+
+                html += f"""
+                <div class="session {vip_class}">
+                    <div class="session-title">
+                        {s['title']}
+                        <span class="match {match_class}">{'⭐ VIP' if s.get('is_vip') else '✓ Match'}</span>
+                    </div>
+                    <div class="session-meta">🕐 {s.get('time', 'TBA')} | 📍 {s.get('venue', 'TBA')}</div>
+                    {"<div class='session-speakers'>👤 " + speakers + "</div>" if speakers else ""}
+                </div>
+                """
+            html += "</div></div>"
+
+    html += """
+        <div class="footer">
+            <p>Generated by AI Summit Navigator | https://planner.streamlit.app</p>
+            <p>India AI Impact Summit 2026 | Feb 16-20 | Bharat Mandapam, New Delhi</p>
+        </div>
+    </body>
+    </html>
+    """
+    return html
+
+
+def render_logo():
+    """Render AI Summit logo"""
+    st.markdown("""
+    <div class="logo-section">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
+            <div style="font-size: 2.5rem;">🇮🇳</div>
+            <div>
+                <div style="font-size: 1.5rem; font-weight: 800; color: #1a1a1a; letter-spacing: -0.02em;">
+                    India AI Impact Summit
+                </div>
+                <div style="font-size: 0.9rem; color: #667eea; font-weight: 600;">2026 | New Delhi</div>
+            </div>
+        </div>
+        <div style="margin-top: 0.75rem;">
+            <span class="logo-badge">Official Planner</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+
 def render_hero():
     """Render hero section"""
     st.markdown("""
-    <div style="text-align: center; padding: 2rem 0 3rem 0;">
+    <div style="text-align: center; padding: 1rem 0 2rem 0;">
         <div class="feature-badge">✨ Free · No signup · Takes 30 seconds</div>
-        <h1 class="hero-title">Your Personal AI Summit Guide</h1>
-        <p class="hero-subtitle">Navigate 700+ sessions across 5 days. Get a personalized schedule<br>optimized for your interests, goals, and networking ROI.</p>
-        <div class="hero-stats">700+ Sessions · 3,250+ Speakers · 300+ Exhibitors · 5 Days</div>
+        <h1 class="hero-title">Your AI Summit Companion</h1>
+        <p class="hero-subtitle">Built for Product Managers, Tech Leaders & Engineers<br>
+        Navigate 700+ sessions with a personalized schedule</p>
+
+        <div style="margin-bottom: 1rem;">
+            <span class="audience-badge">📱 Product Managers</span>
+            <span class="audience-badge">👨‍💻 Tech Leaders</span>
+            <span class="audience-badge">⚙️ Engineers</span>
+        </div>
+
+        <div class="hero-stats">700+ Sessions · 3,250+ Speakers · 100+ Countries · 5 Days</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -678,14 +851,7 @@ def render_hero():
 def render_stats():
     """Render stats cards"""
     col1, col2, col3, col4 = st.columns(4)
-
-    stats = [
-        ("700+", "Sessions"),
-        ("3,250+", "Speakers"),
-        ("300+", "Exhibitors"),
-        ("100+", "Countries"),
-    ]
-
+    stats = [("700+", "Sessions"), ("3,250+", "Speakers"), ("300+", "Exhibitors"), ("100+", "Countries")]
     for col, (number, label) in zip([col1, col2, col3, col4], stats):
         with col:
             st.markdown(f"""
@@ -696,50 +862,42 @@ def render_stats():
             """, unsafe_allow_html=True)
 
 
-def render_progress(step):
-    """Render progress steps"""
-    steps = [
-        ("1", "Your Profile"),
-        ("2", "Interests & Goals"),
-        ("3", "Your Schedule"),
-    ]
-
-    st.markdown(f"""
-    <div class="progress-container">
-        {"".join([f'''
-        <div class="step {'completed' if i < step else 'active' if i == step else ''}">
-            <div class="step-number">{'✓' if i < step else i}</div>
-            <span>{name}</span>
-        </div>
-        ''' for i, (num, name) in enumerate(steps, 1)])}
-    </div>
-    """, unsafe_allow_html=True)
-
-
 def render_questionnaire():
-    """Render the 9-question wizard"""
+    """Render wizard questionnaire"""
     if "wizard_step" not in st.session_state:
         st.session_state.wizard_step = 1
     if "profile" not in st.session_state:
         st.session_state.profile = {}
 
     step = st.session_state.wizard_step
-
-    # Progress indicator
     progress = step / 4
     st.progress(progress)
-    st.markdown(f"<p style='text-align: center; color: #6b7280; margin-bottom: 2rem;'>Step {step} of 4</p>", unsafe_allow_html=True)
+    st.markdown(f"<p style='text-align: center; color: #6b7280; margin-bottom: 1.5rem;'>Step {step} of 4</p>", unsafe_allow_html=True)
 
     if step == 1:
         st.markdown("""
         <div class="question-card">
-            <div class="question-title">👋 Let's get to know you</div>
-            <div class="question-subtitle">Tell us a bit about yourself so we can personalize your experience</div>
+            <div class="question-title">👋 Let's personalize your experience</div>
+            <div class="question-subtitle">Tell us about yourself and your role</div>
         </div>
         """, unsafe_allow_html=True)
 
         name = st.text_input("Your Name", placeholder="Enter your name", key="q_name")
-        role = st.selectbox("Your Role", ["Select your role..."] + ROLES, key="q_role")
+
+        # Phone for WhatsApp
+        phone = st.text_input("WhatsApp Number (optional)", placeholder="+91 98765 43210", key="q_phone",
+                             help="We'll send your schedule directly to WhatsApp")
+
+        st.markdown("**Your Role**")
+        role_cols = st.columns(2)
+        selected_role = None
+        for i, (role_id, role_data) in enumerate(ROLES.items()):
+            with role_cols[i % 2]:
+                if st.checkbox(f"{role_data['icon']} {role_data['name']}", key=f"role_{role_id}"):
+                    selected_role = role_id
+
+        company_size = st.selectbox("Company Size", ["Select..."] + COMPANY_SIZES, key="q_company")
+
         proficiency = st.select_slider(
             "AI/Tech Proficiency",
             options=["Beginner", "Intermediate", "Advanced"],
@@ -751,25 +909,37 @@ def render_questionnaire():
         with col2:
             if st.button("Next →", key="next1", use_container_width=True):
                 st.session_state.profile["name"] = name or "Attendee"
-                st.session_state.profile["role"] = role if role != "Select your role..." else "Professional"
+                st.session_state.profile["phone"] = phone
+                st.session_state.profile["role"] = selected_role or "pm"
+                st.session_state.profile["company_size"] = company_size
                 st.session_state.profile["proficiency"] = proficiency.lower()
                 st.session_state.wizard_step = 2
                 st.rerun()
 
     elif step == 2:
-        st.markdown("""
+        role = st.session_state.profile.get("role", "pm")
+        role_name = ROLES.get(role, {}).get("name", "Professional")
+
+        st.markdown(f"""
         <div class="question-card">
-            <div class="question-title">🎯 What topics excite you?</div>
-            <div class="question-subtitle">Select all areas you'd like to explore at the summit</div>
+            <div class="question-title">🎯 What topics matter to you?</div>
+            <div class="question-subtitle">Recommended for {role_name}s - select all that apply</div>
         </div>
         """, unsafe_allow_html=True)
 
         selected_interests = []
         cols = st.columns(2)
-        for i, (interest_name, keywords) in enumerate(INTERESTS.items()):
+
+        for i, (interest_name, interest_data) in enumerate(INTERESTS.items()):
             with cols[i % 2]:
-                if st.checkbox(interest_name, key=f"int_{interest_name}"):
-                    selected_interests.extend(keywords)
+                # Highlight if recommended for role
+                recommended = role in interest_data.get("for_roles", [])
+                label = f"{interest_data['icon']} {interest_name}"
+                if recommended:
+                    label += " ⭐"
+
+                if st.checkbox(label, value=recommended, key=f"int_{interest_name}"):
+                    selected_interests.extend(interest_data["keywords"])
 
         col1, col2 = st.columns([1, 1])
         with col1:
@@ -786,21 +956,22 @@ def render_questionnaire():
         st.markdown("""
         <div class="question-card">
             <div class="question-title">🚀 What do you want to achieve?</div>
-            <div class="question-subtitle">We'll optimize your schedule for maximum value</div>
+            <div class="question-subtitle">We'll optimize your schedule for maximum ROI</div>
         </div>
         """, unsafe_allow_html=True)
 
         selected_goals = []
-        for goal_id, goal_name, goal_desc in GOALS:
-            if st.checkbox(f"**{goal_name}** - {goal_desc}", key=f"goal_{goal_id}"):
-                selected_goals.append(goal_id)
+        cols = st.columns(2)
+        for i, (goal_id, goal_data) in enumerate(GOALS.items()):
+            with cols[i % 2]:
+                if st.checkbox(f"{goal_data['icon']} **{goal_data['name']}**\n\n{goal_data['desc']}", key=f"goal_{goal_id}"):
+                    selected_goals.append(goal_id)
 
         st.markdown("---")
         st.markdown("**📅 Which days will you attend?**")
-
         selected_days = []
-        cols = st.columns(5)
-        for col, day in zip(cols, DAYS):
+        day_cols = st.columns(5)
+        for col, day in zip(day_cols, DAYS):
             with col:
                 info = DAY_INFO[day]
                 if st.checkbox(f"{info['name'][:3]}\n{info['short']}", value=True, key=f"day_{day}"):
@@ -824,28 +995,70 @@ def render_questionnaire():
 
 
 def render_itinerary_view():
-    """Render the generated itinerary"""
+    """Render the generated itinerary with sharing options"""
     profile = st.session_state.profile
     itinerary = st.session_state.get("itinerary", {})
+    role_name = ROLES.get(profile.get("role", ""), {}).get("name", "Attendee")
+    role_icon = ROLES.get(profile.get("role", ""), {}).get("icon", "👤")
 
     # Header
     st.markdown(f"""
-    <div style="text-align: center; padding: 1rem 0 2rem 0;">
-        <h2 style="font-size: 2rem; font-weight: 700; color: #1a1a1a; margin-bottom: 0.5rem;">
-            ✨ {profile.get('name', 'Your')}'s Personalized Schedule
+    <div style="text-align: center; padding: 1rem 0 1.5rem 0;">
+        <h2 style="font-size: 1.75rem; font-weight: 700; color: #1a1a1a; margin-bottom: 0.5rem;">
+            ✨ {profile.get('name', 'Your')}'s AI Summit Schedule
         </h2>
-        <p style="color: #6b7280;">Optimized for your interests and goals</p>
+        <p style="color: #6b7280;">
+            <span class="role-badge">{role_icon} {role_name}</span>
+            <span class="role-badge">📊 {profile.get('proficiency', 'intermediate').title()}</span>
+        </p>
     </div>
     """, unsafe_allow_html=True)
 
+    # Quick Actions - WhatsApp & PDF
+    st.markdown("### 📤 Share Your Schedule")
+    action_col1, action_col2, action_col3 = st.columns(3)
+
+    with action_col1:
+        # WhatsApp Share
+        wa_message = generate_whatsapp_message(profile, itinerary)
+        wa_link = f"https://wa.me/?text={quote(wa_message)}"
+
+        if profile.get("phone"):
+            phone_clean = profile["phone"].replace(" ", "").replace("-", "")
+            if not phone_clean.startswith("+"):
+                phone_clean = "+91" + phone_clean
+            wa_link = f"https://wa.me/{phone_clean}?text={quote(wa_message)}"
+
+        st.markdown(f"""
+        <a href="{wa_link}" target="_blank" class="action-btn btn-whatsapp" style="display: block; text-align: center; text-decoration: none;">
+            📱 Send to WhatsApp
+        </a>
+        """, unsafe_allow_html=True)
+
+    with action_col2:
+        # PDF Download
+        pdf_html = generate_pdf_html(profile, itinerary)
+        b64 = base64.b64encode(pdf_html.encode()).decode()
+        href = f'<a href="data:text/html;base64,{b64}" download="ai_summit_schedule_{profile.get("name", "schedule").replace(" ", "_")}.html" class="action-btn btn-pdf" style="display: block; text-align: center; text-decoration: none;">📄 Download PDF</a>'
+        st.markdown(href, unsafe_allow_html=True)
+
+    with action_col3:
+        if st.button("🔗 Share Link", use_container_width=True, key="share_link"):
+            st.session_state.show_share = True
+
+    st.markdown("---")
+
     # Profile summary
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
     with col1:
-        st.metric("Proficiency", profile.get("proficiency", "intermediate").title())
+        st.metric("Role", role_name[:15])
     with col2:
-        st.metric("Interest Areas", len(set(profile.get("interests", []))))
+        st.metric("Proficiency", profile.get("proficiency", "").title())
     with col3:
-        st.metric("Days Attending", len(profile.get("days", [])))
+        st.metric("Days", len(profile.get("days", [])))
+    with col4:
+        total_sessions = sum(len(s) for s in itinerary.values())
+        st.metric("Sessions", total_sessions)
 
     st.markdown("---")
 
@@ -857,14 +1070,14 @@ def render_itinerary_view():
             with tab:
                 day_info = DAY_INFO[day]
                 st.markdown(f"""
-                <div style="padding: 1rem; background: #f8f9fa; border-radius: 12px; margin-bottom: 1.5rem;">
-                    <h3 style="margin: 0; color: #1a1a1a;">🎪 {day_info['theme']}</h3>
+                <div style="padding: 0.75rem; background: #f8f9fa; border-radius: 12px; margin-bottom: 1rem;">
+                    <h3 style="margin: 0; color: #1a1a1a; font-size: 1.1rem;">🎪 {day_info['theme']}</h3>
                 </div>
                 """, unsafe_allow_html=True)
 
                 sessions = itinerary.get(day, [])
                 if not sessions:
-                    st.info("No highly matched sessions for this day. Try broadening your interests!")
+                    st.info("No highly matched sessions. Try broadening your interests!")
                     continue
 
                 for session in sessions:
@@ -872,55 +1085,36 @@ def render_itinerary_view():
                     is_vip = session.get("is_vip", False)
                     networking_roi = session.get("networking_roi", 0)
 
-                    # Determine match level
-                    if score > 12:
-                        match_class = "match-high"
-                        match_text = "High Match"
-                    elif score > 6:
-                        match_class = "match-medium"
-                        match_text = "Good Match"
-                    else:
-                        match_class = "match-low"
-                        match_text = "Relevant"
+                    match_class = "match-high" if score > 12 else "match-medium" if score > 6 else "match-low"
+                    match_text = "High Match" if score > 12 else "Good Match" if score > 6 else "Relevant"
 
-                    # Session card
-                    vip_class = "vip" if is_vip else ""
-                    vip_badge = '<span class="vip-badge">VIP Session</span>' if is_vip else ''
-
-                    with st.expander(f"**{session['title']}** | {session.get('time', 'TBA')}"):
+                    with st.expander(f"**{session['title']}** | {session.get('time', 'TBA')} {'⭐' if is_vip else ''}"):
                         col1, col2 = st.columns([2, 1])
 
                         with col1:
                             st.markdown(f"**Description:** {session.get('description', 'N/A')}")
-
                             if session.get("speakers"):
                                 st.markdown("**Speakers:**")
                                 for speaker in session["speakers"][:3]:
                                     st.markdown(f'<span class="speaker-tag">👤 {speaker}</span>', unsafe_allow_html=True)
-
-                            st.markdown("**Topics:**")
                             topics_html = " ".join([f'<span class="topic-tag">{t}</span>' for t in session.get("topics", [])[:5]])
-                            st.markdown(topics_html, unsafe_allow_html=True)
+                            st.markdown(f"**Topics:** {topics_html}", unsafe_allow_html=True)
 
                         with col2:
                             st.markdown(f'<span class="{match_class} match-badge">✓ {match_text}</span>', unsafe_allow_html=True)
                             if is_vip:
                                 st.markdown('<span class="vip-badge">⭐ VIP</span>', unsafe_allow_html=True)
-
                             st.markdown(f"**Level:** {session.get('level', 'all').title()}")
                             if session.get("venue"):
                                 st.markdown(f"**Venue:** {session['venue']}")
-
                             if networking_roi > 3:
                                 st.markdown("🤝 **High Networking ROI**")
-
                             st.progress(min(score / 20, 1.0))
-                            st.caption(f"Match Score: {score:.1f}/20")
+                            st.caption(f"Match: {score:.1f}/20")
 
-    # Actions
+    # Bottom actions
     st.markdown("---")
-    col1, col2, col3 = st.columns(3)
-
+    col1, col2 = st.columns(2)
     with col1:
         if st.button("🔄 Start Over", use_container_width=True):
             st.session_state.wizard_step = 1
@@ -928,63 +1122,49 @@ def render_itinerary_view():
             st.session_state.itinerary = {}
             st.rerun()
 
-    with col2:
-        if st.button("📤 Share Schedule", use_container_width=True):
-            st.session_state.show_share = True
-
-    with col3:
-        if st.button("📥 Download PDF", use_container_width=True):
-            st.info("PDF download coming soon!")
-
     # Share modal
     if st.session_state.get("show_share"):
-        with st.expander("Share Your Schedule", expanded=True):
+        with st.expander("📤 Share to Community", expanded=True):
             share_name = st.text_input("Display Name", value=profile.get("name", ""))
-            share_bio = st.text_area("Brief Bio", placeholder="AI researcher, startup founder, etc.")
-
-            if st.button("Share to Community"):
+            share_bio = st.text_area("Brief Bio", placeholder="PM at startup, interested in GenAI...")
+            if st.button("Share My Schedule"):
                 community_data = load_community_data()
                 share_entry = {
                     "id": hashlib.md5(f"{share_name}{datetime.now().isoformat()}".encode()).hexdigest()[:8],
                     "name": share_name,
                     "bio": share_bio,
+                    "role": role_name,
                     "proficiency": profile.get("proficiency", ""),
                     "interests": list(set(profile.get("interests", [])))[:5],
                     "goals": profile.get("goals", [])[:3],
-                    "itinerary": {
-                        day: [{"title": s["title"], "time": s.get("time", "TBA")} for s in sessions[:3]]
-                        for day, sessions in itinerary.items()
-                    },
+                    "itinerary": {day: [{"title": s["title"], "time": s.get("time", "TBA")} for s in sessions[:3]] for day, sessions in itinerary.items()},
                     "shared_at": datetime.now().isoformat(),
                 }
                 community_data["itineraries"].append(share_entry)
                 save_community_data(community_data)
-                st.success(f"✅ Shared! Your code: **{share_entry['id']}**")
+                st.success(f"✅ Shared! Code: **{share_entry['id']}**")
                 st.session_state.show_share = False
 
 
 def render_expo_guide():
     """Render expo pavilion guide"""
     st.markdown("""
-    <div style="text-align: center; padding: 2rem 0;">
-        <h2 style="font-size: 2rem; font-weight: 700; color: #1a1a1a;">🏛️ Expo Pavilion Guide</h2>
+    <div style="text-align: center; padding: 1.5rem 0;">
+        <h2 style="font-size: 1.75rem; font-weight: 700; color: #1a1a1a;">🏛️ Expo Pavilion Guide</h2>
         <p style="color: #6b7280;">300+ exhibitors across 10 thematic pavilions</p>
     </div>
     """, unsafe_allow_html=True)
 
     pavilions = EVENT_DATA.get("expo_pavilions", [])
-
     cols = st.columns(3)
     for i, pavilion in enumerate(pavilions):
         with cols[i % 3]:
             icon = EXPO_ICONS.get(pavilion["name"], "📍")
-            focus_tags = ", ".join(pavilion.get("focus", [])[:3])
-
             st.markdown(f"""
             <div class="expo-card">
                 <div class="expo-icon">{icon}</div>
                 <div class="expo-title">{pavilion['name']}</div>
-                <div class="expo-tags">{focus_tags}</div>
+                <div class="expo-tags">{', '.join(pavilion.get('focus', [])[:3])}</div>
             </div>
             """, unsafe_allow_html=True)
             st.markdown("")
@@ -993,19 +1173,17 @@ def render_expo_guide():
 def render_speakers():
     """Render speakers section"""
     st.markdown("""
-    <div style="text-align: center; padding: 2rem 0;">
-        <h2 style="font-size: 2rem; font-weight: 700; color: #1a1a1a;">🎤 Featured Speakers</h2>
-        <p style="color: #6b7280;">World's leading AI minds under one roof</p>
+    <div style="text-align: center; padding: 1.5rem 0;">
+        <h2 style="font-size: 1.75rem; font-weight: 700; color: #1a1a1a;">🎤 Featured Speakers</h2>
+        <p style="color: #6b7280;">World's top AI minds</p>
     </div>
     """, unsafe_allow_html=True)
 
     speakers = EVENT_DATA.get("speakers", [])
-
     cols = st.columns(2)
     for i, speaker in enumerate(speakers):
         with cols[i % 2]:
             topics_html = " ".join([f'<span class="topic-tag">{t}</span>' for t in speaker.get("topics", [])])
-
             st.markdown(f"""
             <div class="session-card">
                 <div class="session-title">{speaker['name']}</div>
@@ -1018,9 +1196,9 @@ def render_speakers():
 def render_community():
     """Render community section"""
     st.markdown("""
-    <div style="text-align: center; padding: 2rem 0;">
-        <h2 style="font-size: 2rem; font-weight: 700; color: #1a1a1a;">👥 Community Schedules</h2>
-        <p style="color: #6b7280;">See what others are planning</p>
+    <div style="text-align: center; padding: 1.5rem 0;">
+        <h2 style="font-size: 1.75rem; font-weight: 700; color: #1a1a1a;">👥 Community Schedules</h2>
+        <p style="color: #6b7280;">See what other PMs, Leaders & Engineers are planning</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -1028,22 +1206,16 @@ def render_community():
     itineraries = community_data.get("itineraries", [])
 
     if not itineraries:
-        st.info("No shared schedules yet. Be the first to share yours!")
+        st.info("No shared schedules yet. Be the first!")
         return
 
-    # Filter
-    filter_prof = st.selectbox("Filter by proficiency", ["All", "Beginner", "Intermediate", "Advanced"])
+    filter_role = st.selectbox("Filter by Role", ["All"] + [r["name"] for r in ROLES.values()])
 
     for entry in itineraries[-10:][::-1]:
-        if filter_prof != "All" and entry.get("proficiency", "").lower() != filter_prof.lower():
+        if filter_role != "All" and entry.get("role") != filter_role:
             continue
-
-        with st.expander(f"**{entry['name']}** | {entry.get('proficiency', '').title()} | Shared {entry.get('shared_at', '')[:10]}"):
+        with st.expander(f"**{entry['name']}** | {entry.get('role', '')} | {entry.get('shared_at', '')[:10]}"):
             st.markdown(f"*{entry.get('bio', 'No bio')}*")
-
-            interests_html = " ".join([f'<span class="topic-tag">{i}</span>' for i in entry.get("interests", [])[:5]])
-            st.markdown(f"**Interests:** {interests_html}", unsafe_allow_html=True)
-
             st.markdown("**Their Schedule:**")
             for day, sessions in entry.get("itinerary", {}).items():
                 st.markdown(f"📅 **{DAY_INFO.get(day, {}).get('name', day)}:**")
@@ -1052,40 +1224,28 @@ def render_community():
 
 
 def main():
-    """Main app"""
-    # Check if we're in wizard mode or showing results
+    render_logo()
+
     if st.session_state.get("wizard_step", 1) < 4:
-        # Show hero and wizard
         render_hero()
         render_stats()
         st.markdown("---")
         render_questionnaire()
     else:
-        # Show tabs with results
-        tab1, tab2, tab3, tab4 = st.tabs([
-            "📋 My Schedule",
-            "🏛️ Expo Guide",
-            "🎤 Speakers",
-            "👥 Community"
-        ])
-
+        tab1, tab2, tab3, tab4 = st.tabs(["📋 My Schedule", "🏛️ Expo", "🎤 Speakers", "👥 Community"])
         with tab1:
             render_itinerary_view()
-
         with tab2:
             render_expo_guide()
-
         with tab3:
             render_speakers()
-
         with tab4:
             render_community()
 
-    # Footer
     st.markdown("""
     <div class="footer">
-        <p>Built for <strong>India AI Impact Summit 2026</strong> · Feb 16-20, New Delhi</p>
-        <p style="margin-top: 0.5rem;">Made with ❤️ for the AI community</p>
+        <p>🇮🇳 <strong>India AI Impact Summit 2026</strong> | Feb 16-20 | Bharat Mandapam, New Delhi</p>
+        <p style="margin-top: 0.5rem;">Made with ❤️ for PMs, Tech Leaders & Engineers</p>
     </div>
     """, unsafe_allow_html=True)
 
