@@ -1072,7 +1072,14 @@ def render_itinerary():
                     score = s.get("score", 0)
                     is_vip = s.get("is_vip", False)
 
-                    with st.expander(f"**{s.get('title','')}** | {s.get('time', 'TBA')} {'⭐' if is_vip else ''}"):
+                    hall = s.get("hall") or s.get("hall_name") or s.get("room")
+venue = s.get("venue") or s.get("location")
+place = " • ".join([p for p in [hall, venue] if p])
+
+with st.expander(
+    f"**{s.get('title','')}** | {s.get('time', 'TBA')} | {place} {'⭐' if is_vip else ''}".strip()
+):
+
                         c1, c2 = st.columns([2, 1])
                         with c1:
                             st.write(s.get("description", ""))
@@ -1083,8 +1090,16 @@ def render_itinerary():
                             if is_vip:
                                 md_html('<span class="badge badge-vip">⭐ VIP Session</span>')
                             md_html(f'<span class="badge badge-{"high" if score > 10 else "medium"}">✓ {"High" if score > 10 else "Good"} Match</span>')
-                            if s.get("venue"):
-                                st.write(f"📍 {s['venue']}")
+                            hall = s.get("hall") or s.get("hall_name") or s.get("room")  # supports multiple keys
+venue = s.get("venue") or s.get("location")
+
+if hall and venue:
+    st.write(f"📍 {hall} • {venue}")
+elif hall:
+    st.write(f"📍 {hall}")
+elif venue:
+    st.write(f"📍 {venue}")
+
                             st.progress(min(score / 20, 1.0))
 
     st.markdown("---")
