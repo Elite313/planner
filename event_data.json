@@ -1,0 +1,439 @@
+{
+  "event": {
+    "name": "India AI Impact Summit 2026",
+    "tagline": "From Vision to Action: India Leading the AI Impact Movement",
+    "dates": {
+      "start": "2026-02-16",
+      "end": "2026-02-20"
+    },
+    "venue": {
+      "primary": "Bharat Mandapam, Pragati Maidan, New Delhi",
+      "secondary": ["Sushma Swaraj Bhawan", "Ambedkar Bhawan", "India Habitat Centre"]
+    },
+    "stats": {
+      "sessions": "700+",
+      "speakers": "3250+",
+      "exhibitors": "300+",
+      "countries": "100+",
+      "expected_visitors": 250000
+    }
+  },
+  "framework": {
+    "sutras": [
+      {"name": "People", "description": "Ensuring AI serves humanity while preserving dignity and inclusivity"},
+      {"name": "Planet", "description": "Aligning AI innovation with environmental stewardship"},
+      {"name": "Progress", "description": "Equitably sharing AI's benefits for global development"}
+    ],
+    "chakras": [
+      {"id": "human_capital", "name": "Human Capital", "description": "AI skills, workforce development, talent pipeline"},
+      {"id": "inclusion", "name": "Inclusion for Social Empowerment", "description": "Accessible AI, bridging digital divide, rural inclusion"},
+      {"id": "safe_ai", "name": "Safe & Trusted AI", "description": "AI safety, governance, ethics, accountability"},
+      {"id": "science", "name": "Science", "description": "Research, innovation, academic collaboration"},
+      {"id": "resilience", "name": "Resilience, Innovation and Efficiency", "description": "Enterprise AI, automation, productivity"},
+      {"id": "democratizing", "name": "Democratizing AI Resources", "description": "Open-source, shared compute, AI commons"},
+      {"id": "economic_dev", "name": "AI for Economic Development & Social Good", "description": "Healthcare, agriculture, finance, education, governance"}
+    ]
+  },
+  "daily_schedule": {
+    "2026-02-16": {
+      "day": "Monday",
+      "theme": "Expo Launch & Inauguration",
+      "highlights": [
+        "PM Modi inaugurates India AI Impact Expo at 5 PM",
+        "Keynote addresses and policy-focused panel discussions",
+        "Expert roundtables on national AI priorities"
+      ],
+      "sessions": [
+        {
+          "id": "d1s1",
+          "title": "AI for Road Safety",
+          "time": "10:00 - 11:00",
+          "track": "economic_dev",
+          "level": "intermediate",
+          "topics": ["transportation", "safety", "data-analytics", "smart-cities"],
+          "description": "Data-driven methods to understand crash patterns, predict risks, and support safer mobility systems"
+        },
+        {
+          "id": "d1s2",
+          "title": "HER First Algorithm: Impact Challenge for Women in AI",
+          "time": "11:30 - 12:30",
+          "track": "inclusion",
+          "level": "all",
+          "topics": ["women-in-tech", "entrepreneurship", "social-impact"],
+          "description": "Global contest inviting women to create AI solutions for large public problems"
+        },
+        {
+          "id": "d1s3",
+          "title": "Future of Work and Learning",
+          "time": "14:00 - 15:00",
+          "track": "human_capital",
+          "level": "beginner",
+          "topics": ["future-of-work", "education", "skills", "career"],
+          "description": "How AI is changing jobs globally, required skills, and continuous learning"
+        },
+        {
+          "id": "d1s4",
+          "title": "AI to Transform India's Judicial Ecosystem",
+          "time": "15:30 - 16:30",
+          "track": "economic_dev",
+          "level": "intermediate",
+          "topics": ["legal-tech", "governance", "automation", "public-sector"],
+          "description": "AI for case management, legal research, virtual hearings, decision-making support"
+        },
+        {
+          "id": "d1s5",
+          "title": "Culturally Grounded AI",
+          "time": "17:00 - 18:00",
+          "track": "inclusion",
+          "level": "advanced",
+          "topics": ["ethics", "cultural-ai", "localization", "responsible-ai"],
+          "description": "How social values and cultural differences influence AI acceptance and deployment"
+        },
+        {
+          "id": "d1s6",
+          "title": "AI for Smart Agriculture",
+          "time": "14:00 - 15:00",
+          "track": "economic_dev",
+          "level": "intermediate",
+          "topics": ["agriculture", "sustainability", "climate", "rural"],
+          "description": "Sustainable farming, climate-friendly practices, farmer data challenges"
+        },
+        {
+          "id": "d1s7",
+          "title": "Future of Employability in the Age of AI",
+          "time": "10:00 - 11:30",
+          "venue": "Bharat Mandapam",
+          "track": "human_capital",
+          "level": "all",
+          "topics": ["career", "skills", "future-of-work", "employment"],
+          "description": "Exploring how AI reshapes employment landscape and required competencies"
+        },
+        {
+          "id": "d1s8",
+          "title": "AI for Education: Future Ready Universities and Schools",
+          "time": "14:00 - 15:30",
+          "venue": "Bharat Mandapam",
+          "track": "human_capital",
+          "level": "intermediate",
+          "topics": ["education", "edtech", "universities", "skills"],
+          "description": "Transforming educational institutions with AI-powered tools and curricula"
+        }
+      ]
+    },
+    "2026-02-17": {
+      "day": "Tuesday",
+      "theme": "Sectoral Focus & Knowledge Launch",
+      "highlights": [
+        "Launch of AI Knowledge Compendiums",
+        "Sectoral deep-dives: health, energy, education, agriculture",
+        "Cultural evening: India's Journey from Tradition to Technology"
+      ],
+      "sessions": [
+        {
+          "id": "d2s1",
+          "title": "MDB Financing for AI Initiatives",
+          "time": "09:30 - 10:25",
+          "venue": "Hall No 16",
+          "track": "economic_dev",
+          "level": "advanced",
+          "topics": ["financing", "policy", "investment", "development-banks"],
+          "speakers": ["Antonio Zaballos (ADB)", "Dr J. Ganesan (HARTRON)", "Jai Chordia (AIIB)", "Mahesh Uttamchandani (World Bank)"],
+          "description": "Multilateral Development Bank financing strategies for AI initiatives"
+        },
+        {
+          "id": "d2s2",
+          "title": "Harnessing AI for Equitable and Resilient Health Systems",
+          "time": "10:30 - 11:25",
+          "venue": "West Wing Room 4A",
+          "track": "economic_dev",
+          "level": "intermediate",
+          "topics": ["healthcare", "public-health", "diagnostics", "health-equity"],
+          "speakers": ["Mamta Murthi (World Bank VP)", "Dr. Geetha Manjunath (Niramai)", "Preetha Reddy (Apollo Hospitals)"],
+          "description": "Global dialogue on AI in healthcare with an Indian lens"
+        },
+        {
+          "id": "d2s3",
+          "title": "PadhAI Conclave 2.0: Reimagining Indian Education System",
+          "time": "10:00 - 13:00",
+          "venue": "Gulmohar Hall, India Habitat Centre",
+          "track": "human_capital",
+          "level": "all",
+          "topics": ["education", "policy", "curriculum", "schools"],
+          "speakers": ["Ashish Sood (Delhi Education Minister)", "Nishikant Dubey (MP)"],
+          "description": "Comprehensive reimagination of India's education system with AI"
+        },
+        {
+          "id": "d2s4",
+          "title": "AI in Energy & Climate Action",
+          "time": "14:00 - 15:00",
+          "track": "economic_dev",
+          "level": "intermediate",
+          "topics": ["energy", "climate", "sustainability", "renewables"],
+          "description": "AI applications in renewable energy management and climate modeling"
+        },
+        {
+          "id": "d2s5",
+          "title": "Building Inclusive AI: Bridging the Digital Divide",
+          "time": "15:30 - 16:30",
+          "track": "inclusion",
+          "level": "beginner",
+          "topics": ["accessibility", "rural", "digital-divide", "inclusion"],
+          "description": "Strategies for ensuring AI benefits reach underserved communities"
+        }
+      ]
+    },
+    "2026-02-18": {
+      "day": "Wednesday",
+      "theme": "Research & Innovation",
+      "highlights": [
+        "Research Symposium: Academics meet Industry",
+        "Startup showcases and demos",
+        "Technology exhibitions"
+      ],
+      "sessions": [
+        {
+          "id": "d3s1",
+          "title": "Data for Development: Building AI in the Global South",
+          "time": "10:00 - 11:30",
+          "venue": "Bharat Mandapam",
+          "track": "democratizing",
+          "level": "advanced",
+          "topics": ["data-governance", "global-south", "development", "policy"],
+          "description": "Data strategies and governance for AI development in emerging economies"
+        },
+        {
+          "id": "d3s2",
+          "title": "Research Symposium: Frontiers of AI",
+          "time": "10:00 - 13:00",
+          "track": "science",
+          "level": "advanced",
+          "topics": ["research", "academic", "cutting-edge", "papers"],
+          "description": "Academic presentations on latest AI research breakthroughs"
+        },
+        {
+          "id": "d3s3",
+          "title": "Startup Showcase: AI Solutions for Real Problems",
+          "time": "14:00 - 17:00",
+          "track": "resilience",
+          "level": "all",
+          "topics": ["startups", "innovation", "entrepreneurship", "demos"],
+          "description": "Indian and global startups presenting scalable AI solutions"
+        },
+        {
+          "id": "d3s4",
+          "title": "Foundation Models & Open Source AI",
+          "time": "11:00 - 12:00",
+          "track": "democratizing",
+          "level": "advanced",
+          "topics": ["llm", "foundation-models", "open-source", "technical"],
+          "description": "State of foundation models and open-source AI ecosystem"
+        },
+        {
+          "id": "d3s5",
+          "title": "AI Safety: Technical Approaches",
+          "time": "14:00 - 15:30",
+          "track": "safe_ai",
+          "level": "advanced",
+          "topics": ["ai-safety", "alignment", "technical", "research"],
+          "description": "Technical approaches to AI alignment and safety research"
+        },
+        {
+          "id": "d3s6",
+          "title": "Generative AI: Beyond the Hype",
+          "time": "16:00 - 17:00",
+          "track": "science",
+          "level": "intermediate",
+          "topics": ["genai", "llm", "applications", "enterprise"],
+          "description": "Practical applications and limitations of generative AI"
+        }
+      ]
+    },
+    "2026-02-19": {
+      "day": "Thursday",
+      "theme": "Summit Opening & Leadership",
+      "highlights": [
+        "Formal Opening Ceremony by PM Modi",
+        "CEO Roundtable with global tech leaders",
+        "Leaders' Plenary on responsible AI"
+      ],
+      "sessions": [
+        {
+          "id": "d4s1",
+          "title": "Opening Ceremony & Inaugural Address",
+          "time": "10:00 - 11:00",
+          "venue": "Main Plenary Hall",
+          "track": "all",
+          "level": "all",
+          "topics": ["policy", "vision", "leadership"],
+          "speakers": ["PM Narendra Modi"],
+          "description": "Formal inauguration of AI Impact Summit 2026"
+        },
+        {
+          "id": "d4s2",
+          "title": "CEO Roundtable: Strategic Priorities for AI",
+          "time": "11:30 - 13:00",
+          "venue": "Main Plenary Hall",
+          "track": "resilience",
+          "level": "advanced",
+          "topics": ["strategy", "investment", "enterprise", "leadership"],
+          "speakers": ["Sundar Pichai (Google)", "Sam Altman (OpenAI)", "Dario Amodei (Anthropic)", "Jensen Huang (NVIDIA)"],
+          "description": "Global tech CEOs discuss investment pathways and responsible AI future"
+        },
+        {
+          "id": "d4s3",
+          "title": "Leaders' Plenary: AI Governance Frameworks",
+          "time": "14:30 - 16:00",
+          "venue": "Main Plenary Hall",
+          "track": "safe_ai",
+          "level": "intermediate",
+          "topics": ["governance", "policy", "regulation", "international"],
+          "description": "World leaders discuss AI governance and international cooperation"
+        },
+        {
+          "id": "d4s4",
+          "title": "Tech CEOs Fireside Chat",
+          "time": "16:30 - 17:30",
+          "venue": "Main Plenary Hall",
+          "track": "resilience",
+          "level": "all",
+          "topics": ["tech", "leadership", "vision", "innovation"],
+          "speakers": ["Demis Hassabis (DeepMind)", "Brad Smith (Microsoft)", "Yann LeCun (Meta)"],
+          "description": "Intimate conversation with AI pioneers on future directions"
+        },
+        {
+          "id": "d4s5",
+          "title": "Fujitsu Keynote: AI & Computing Fusion",
+          "time": "14:00 - 14:30",
+          "venue": "Main Plenary Hall",
+          "track": "science",
+          "level": "intermediate",
+          "topics": ["computing", "hardware", "enterprise", "innovation"],
+          "speakers": ["Takahito Tokita (Fujitsu CEO)"],
+          "description": "Creating social and industrial value through AI and computing fusion"
+        }
+      ]
+    },
+    "2026-02-20": {
+      "day": "Friday",
+      "theme": "Global Cooperation & Closing",
+      "highlights": [
+        "GPAI Council Meetings",
+        "Leaders' Declaration adoption",
+        "Cultural evening: Hornbill Dream"
+      ],
+      "sessions": [
+        {
+          "id": "d5s1",
+          "title": "Democratizing AI Compute & Digital Data Infrastructure",
+          "time": "09:30 - 10:25",
+          "venue": "Room 19",
+          "track": "democratizing",
+          "level": "advanced",
+          "topics": ["compute", "infrastructure", "data", "access"],
+          "speakers": ["Sangbu Kim (World Bank VP)", "Yann LeCun (Meta AI)", "Ronnie Chatterjee (OpenAI)", "Saurabh Garg (MoSPI)"],
+          "description": "Shared computing infrastructure and democratizing AI resources"
+        },
+        {
+          "id": "d5s2",
+          "title": "AI and the New Frontier for Economic Progress",
+          "time": "13:30 - 14:25",
+          "venue": "Room 18",
+          "track": "economic_dev",
+          "level": "advanced",
+          "topics": ["economics", "growth", "policy", "research"],
+          "speakers": ["Johannes Zutt (World Bank)", "Anu Bradford (Columbia Law)", "Michael Kremer (UChicago)"],
+          "description": "Linking innovation and inclusive growth through AI"
+        },
+        {
+          "id": "d5s3",
+          "title": "Reimagining Education in the Age of AI",
+          "time": "10:00 - 11:30",
+          "venue": "Sushma Swaraj Bhawan",
+          "track": "human_capital",
+          "level": "intermediate",
+          "topics": ["education", "curriculum", "skills", "future"],
+          "description": "Comprehensive session on transforming education with AI"
+        },
+        {
+          "id": "d5s4",
+          "title": "GPAI Council: AI Commons Initiative",
+          "time": "11:00 - 12:30",
+          "track": "democratizing",
+          "level": "advanced",
+          "topics": ["gpai", "policy", "international", "commons"],
+          "description": "Global Partnership on AI council meetings and proposals"
+        },
+        {
+          "id": "d5s5",
+          "title": "Leaders' Declaration & Closing Ceremony",
+          "time": "15:00 - 16:30",
+          "venue": "Main Plenary Hall",
+          "track": "all",
+          "level": "all",
+          "topics": ["policy", "declaration", "closing"],
+          "description": "Adoption of Leaders' Declaration and summit closing"
+        }
+      ]
+    }
+  },
+  "speakers": [
+    {"name": "Sundar Pichai", "title": "CEO", "company": "Google/Alphabet", "topics": ["enterprise", "search", "cloud"]},
+    {"name": "Sam Altman", "title": "CEO", "company": "OpenAI", "topics": ["genai", "llm", "agi"]},
+    {"name": "Dario Amodei", "title": "CEO", "company": "Anthropic", "topics": ["ai-safety", "llm", "responsible-ai"]},
+    {"name": "Jensen Huang", "title": "CEO", "company": "NVIDIA", "topics": ["hardware", "computing", "gpu"]},
+    {"name": "Demis Hassabis", "title": "CEO", "company": "Google DeepMind", "topics": ["research", "agi", "science"]},
+    {"name": "Yann LeCun", "title": "Chief AI Scientist", "company": "Meta", "topics": ["research", "open-source", "vision"]},
+    {"name": "Brad Smith", "title": "Vice Chair & President", "company": "Microsoft", "topics": ["enterprise", "policy", "ethics"]},
+    {"name": "Takahito Tokita", "title": "CEO", "company": "Fujitsu", "topics": ["computing", "enterprise", "hardware"]},
+    {"name": "Cristiano Amon", "title": "CEO", "company": "Qualcomm", "topics": ["mobile", "edge-ai", "hardware"]},
+    {"name": "Alexandr Wang", "title": "CEO", "company": "Scale AI", "topics": ["data", "labeling", "enterprise"]}
+  ],
+  "expo_pavilions": [
+    {"name": "Healthcare AI", "focus": ["diagnostics", "drug-discovery", "health-analytics"]},
+    {"name": "AgriTech", "focus": ["smart-farming", "crop-monitoring", "supply-chain"]},
+    {"name": "FinTech", "focus": ["fraud-detection", "credit-scoring", "trading"]},
+    {"name": "EdTech", "focus": ["personalized-learning", "assessment", "tutoring"]},
+    {"name": "Smart Cities", "focus": ["transportation", "energy", "urban-planning"]},
+    {"name": "Climate & Sustainability", "focus": ["emissions", "renewables", "conservation"]},
+    {"name": "Manufacturing & Industry 4.0", "focus": ["automation", "quality", "predictive-maintenance"]},
+    {"name": "Government & Public Services", "focus": ["e-governance", "citizen-services", "policy"]},
+    {"name": "Startups & Innovation", "focus": ["demos", "pitches", "networking"]},
+    {"name": "International Pavilions", "focus": ["France", "USA", "UK", "Japan", "global"]}
+  ],
+  "proficiency_levels": {
+    "beginner": {
+      "description": "New to AI, looking to understand basics",
+      "recommended_tracks": ["human_capital", "inclusion", "economic_dev"]
+    },
+    "intermediate": {
+      "description": "Some AI knowledge, working with AI tools",
+      "recommended_tracks": ["economic_dev", "resilience", "safe_ai"]
+    },
+    "advanced": {
+      "description": "Deep AI expertise, building AI systems",
+      "recommended_tracks": ["science", "democratizing", "safe_ai"]
+    }
+  },
+  "interest_categories": {
+    "policy_governance": {
+      "keywords": ["policy", "regulation", "governance", "ethics", "law"],
+      "tracks": ["safe_ai", "inclusion"]
+    },
+    "technical_research": {
+      "keywords": ["research", "llm", "foundation-models", "technical", "papers"],
+      "tracks": ["science", "democratizing"]
+    },
+    "business_enterprise": {
+      "keywords": ["enterprise", "investment", "strategy", "startup", "business"],
+      "tracks": ["resilience", "economic_dev"]
+    },
+    "social_impact": {
+      "keywords": ["healthcare", "education", "agriculture", "inclusion", "accessibility"],
+      "tracks": ["economic_dev", "inclusion", "human_capital"]
+    },
+    "career_skills": {
+      "keywords": ["career", "skills", "jobs", "learning", "employment"],
+      "tracks": ["human_capital"]
+    }
+  }
+}
